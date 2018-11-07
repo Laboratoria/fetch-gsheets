@@ -10,8 +10,7 @@ const { google } = require('googleapis');
 
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
-const SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly'];
-const TOKEN_PATH = path.join(__dirname, 'token.json');
+const scope = ['https://www.googleapis.com/auth/spreadsheets.readonly'];
 
 
 /**
@@ -19,11 +18,8 @@ const TOKEN_PATH = path.join(__dirname, 'token.json');
  * execute the given callback with the authorized OAuth2 client.
  * @param {google.auth.OAuth2} oAuth2Client The OAuth2 client to get token for.
  */
-const getNewToken = oAuth2Client => new Promise((resolve, reject) => {
-  const authUrl = oAuth2Client.generateAuthUrl({
-    access_type: 'offline',
-    scope: SCOPES,
-  });
+const getNewToken = (oAuth2Client, tokenFile) => new Promise((resolve, reject) => {
+  const authUrl = oAuth2Client.generateAuthUrl({ access_type: 'offline', scope });
   console.log('Authorize this app by visiting this url:', authUrl);
   const rl = readline.createInterface({
     input: process.stdin,
@@ -36,9 +32,9 @@ const getNewToken = oAuth2Client => new Promise((resolve, reject) => {
         return reject(new Error('Error while trying to retrieve access token'));
       }
       oAuth2Client.setCredentials(token);
-      writeFile(TOKEN_PATH, JSON.stringify(token))
+      writeFile(tokenFile, JSON.stringify(token))
         .then(() => {
-          console.log('Token stored to', TOKEN_PATH);
+          console.log(`Token stored to ${tokenFile}`);
           resolve(oAuth2Client);
         })
         .catch(reject);
@@ -52,18 +48,18 @@ const getNewToken = oAuth2Client => new Promise((resolve, reject) => {
  * given callback function.
  * @param {Object} credentials The authorization client credentials.
  */
-const authorize = (credentials) => {
+const authorize = ({ credentials, tokenFile }) => {
   // eslint-disable-next-line camelcase
   const { client_secret, client_id, redirect_uris } = credentials.installed;
   const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
 
   // Check if we have previously stored a token.
-  return readFile(TOKEN_PATH)
+  return readFile(tokenFile)
     .then((token) => {
       oAuth2Client.setCredentials(JSON.parse(token));
       return oAuth2Client;
     })
-    .catch(() => getNewToken(oAuth2Client));
+    .catch(() => getNewToken(oAuth2Client, tokenFile));
 };
 
 
@@ -96,14 +92,16 @@ const fetchSheets = (auth, sources) => {
 
 
 module.exports = (sources, opts) => (
-  authorize(opts.credentials)
+  authorize(opts)
     .then(oAuth2Client => fetchSheets(oAuth2Client, sources))
 );
 
 
 if (module === require.main) {
   const { _: sources, ...opts } = minimist(process.argv.slice(2));
-  const credentialsPath = path.resolve(opts.c || opts.credentials || 'credentials.json');
+  const credentialsFile = path.resolve(opts.c || opts.credentials || 'credentials.json');
+  const credentialsDir = path.dirname(credentialsFile);
+  const tokenFile = path.join(credentialsDir, 'token.json');
   const parsedSources = sources.map(source => {
     const sepIdx = source.indexOf('!');
     return {
@@ -112,14 +110,15 @@ if (module === require.main) {
     };
   });
 
-  readFile(credentialsPath)
+  readFile(credentialsFile)
     .then(content => module.exports(parsedSources, {
       ...opts,
       credentials: JSON.parse(content),
+      tokenFile,
     }))
     .then(results => console.log(JSON.stringify(results, null, 2)))
     .catch(err => {
-      console.error(`Error loading client secret file frpm ${credentialsPath}`, err);
+      console.error(`Error loading client secret file frpm ${credentialsFile}`, err);
       return process.exit(1);
     });
 }
