@@ -15,8 +15,10 @@ const scope = ['https://www.googleapis.com/auth/spreadsheets.readonly'];
 
 /**
  * Get and store new token after prompting for user authorization, and then
- * execute the given callback with the authorized OAuth2 client.
+ * resolve with the authorized OAuth2 client.
+ *
  * @param {google.auth.OAuth2} oAuth2Client The OAuth2 client to get token for.
+ * @param {String} tokenFile Path to token file.
  */
 const getNewToken = (oAuth2Client, tokenFile) => new Promise((resolve, reject) => {
   const authUrl = oAuth2Client.generateAuthUrl({ access_type: 'offline', scope });
@@ -32,7 +34,7 @@ const getNewToken = (oAuth2Client, tokenFile) => new Promise((resolve, reject) =
         return reject(new Error('Error while trying to retrieve access token'));
       }
       oAuth2Client.setCredentials(token);
-      writeFile(tokenFile, JSON.stringify(token))
+      return writeFile(tokenFile, JSON.stringify(token))
         .then(() => {
           console.log(`Token stored to ${tokenFile}`);
           resolve(oAuth2Client);
@@ -44,9 +46,12 @@ const getNewToken = (oAuth2Client, tokenFile) => new Promise((resolve, reject) =
 
 
 /**
- * Create an OAuth2 client with the given credentials, and then execute the
- * given callback function.
- * @param {Object} credentials The authorization client credentials.
+ * Create an OAuth2 client with the given credentials, and then resolve with the
+ * authorized OAuth2 client.
+ *
+ * @param {Object} options An object with the following keys:
+ *                 * {Object} credentials The authorization client credentials.
+ *                 * {String} tokenFile Path to token file.
  */
 const authorize = ({ credentials, tokenFile }) => {
   // eslint-disable-next-line camelcase
@@ -69,7 +74,9 @@ const parseValue = (value) => {
 
   if (/^\d+$/.test(trimmed)) {
     return parseInt(trimmed, 10);
-  } else if (['true', 'false'].indexOf(lowercased) !== -1) {
+  }
+
+  if (['true', 'false'].indexOf(lowercased) !== -1) {
     return (lowercased === 'true');
   }
 
@@ -87,7 +94,7 @@ const fetchSheets = (auth, sources) => {
   );
 
   return Promise.all(sources.map(item => get(item)))
-    .then(results => results.map(resp => parseRows(resp.data.values)))
+    .then(results => results.map(resp => parseRows(resp.data.values)));
 };
 
 
@@ -102,7 +109,7 @@ if (module === require.main) {
   const credentialsFile = path.resolve(opts.c || opts.credentials || 'credentials.json');
   const credentialsDir = path.dirname(credentialsFile);
   const tokenFile = path.join(credentialsDir, 'token.json');
-  const parsedSources = sources.map(source => {
+  const parsedSources = sources.map((source) => {
     const sepIdx = source.indexOf('!');
     return {
       spreadsheetId: source.slice(0, sepIdx),
@@ -117,8 +124,8 @@ if (module === require.main) {
       tokenFile,
     }))
     .then(results => console.log(JSON.stringify(results, null, 2)))
-    .catch(err => {
-      console.error(`Error loading client secret file frpm ${credentialsFile}`, err);
-      return process.exit(1);
+    .catch((err) => {
+      console.error(err);
+      process.exit(1);
     });
 }
