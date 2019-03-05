@@ -1,21 +1,26 @@
 {
   "name": "fetch-gsheets",
-  "version": "1.0.0",
+  "version": "1.0.0-alpha.1",
   "main": "index.js",
   "license": "MIT",
   "bin": {
     "fetch-gsheets": "./index.js"
   },
   "scripts": {
-    "test": "eslint ."
+    "pretest": "eslint .",
+    "test": "jest --verbose --coverage"
   },
   "dependencies": {
-    "googleapis": "^34.0.0",
+    "googleapis": "^37.2.0",
     "minimist": "^1.2.0"
   },
   "devDependencies": {
-    "eslint": "^5.9.0",
+    "eslint": "^5.15.1",
     "eslint-config-airbnb-base": "^13.1.0",
-    "eslint-plugin-import": "^2.14.0"
+    "eslint-plugin-import": "^2.14.0",
+    "jest": "^24.1.0"
+  },
+  "engines": {
+    "node": ">=8.15.0"
   }
 }
