@@ -6,6 +6,7 @@ const readline = require('readline');
 const { promisify } = require('util');
 const minimist = require('minimist');
 const { google } = require('googleapis');
+const pkg = require('./package.json');
 
 
 const readFile = promisify(fs.readFile);
@@ -104,8 +105,47 @@ module.exports = (sources, opts) => (
 );
 
 
+const help = () => `Usage: ${pkg.name} [options] <selector-1> [...<selector-N>]
+
+Command expects one or more "selectors" as arguments.
+
+Each selector is a string with the following format:
+
+'<spreadSheetId>!<sheetId>!<range>'
+
+For example:
+
+${pkg.name} '2vG81bkFMfroZFNmCbD9SQcUo-Wed08goNrJB9Yyl9AB!SCL!A1:I'
+
+In this example
+
+* spreadSheetId: '2vG81bkFMfroZFNmCbD9SQcUo-Wed08goNrJB9Yyl9AB'
+* sheetId: 'SCL'
+* rangeL 'A1:I'
+
+Options:
+
+-c, --credentials Path to service account key file. Default: credentials.json
+-h, --help        Show this help.
+-v, --version     Show ${pkg.name} version.
+
+For more info please check https://github.com/Laboratoria/fetch-gsheets
+`;
+
+
 if (module === require.main) {
   const { _: sources, ...opts } = minimist(process.argv.slice(2));
+
+  if (opts.h || opts.help) {
+    console.log(help());
+    return process.exit(0);
+  }
+
+  if (opts.v || opts.version) {
+    console.log(pkg.version);
+    return process.exit(0);
+  }
+
   const credentialsFile = path.resolve(opts.c || opts.credentials || 'credentials.json');
   const credentialsDir = path.dirname(credentialsFile);
   const tokenFile = path.join(credentialsDir, 'token.json');
