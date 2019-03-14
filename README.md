@@ -60,10 +60,11 @@ For more info please check https://github.com/Laboratoria/fetch-gsheets
 ## Authentication
 
 Before you use the `fetch-gsheets` command you will need to create a _project_
-in the [Google Cloud Console](https://console.cloud.google.com/) and then
-create and download an _OAuth Client ID_. After creating a project in
-Google Cloud, to get an _OAuth Client ID_ (the credentials for `fetch-gsheets`),
-follow these steps:
+in the [Google Cloud Console](https://console.cloud.google.com/),
+[enable access to the _Google Sheets API_](https://cloud.google.com/apis/docs/enable-disable-apis)
+for that project and create an _OAuth Client ID_. After creating a project in
+Google Cloud and enabling access to the _Google Sheets API_, to get an
+_OAuth Client ID_ (the credentials for `fetch-gsheets`), follow these steps:
 
 1. Go to https://console.cloud.google.com/apis/credentials.
 
