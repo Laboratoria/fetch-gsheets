@@ -1,6 +1,6 @@
 {
   "name": "fetch-gsheets",
-  "version": "1.0.0-alpha.1",
+  "version": "1.0.0-alpha.2",
   "description": "Fetch Google Sheets from the command line",
   "license": "MIT",
   "bin": {
