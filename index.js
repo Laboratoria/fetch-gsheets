@@ -138,12 +138,12 @@ if (module === require.main) {
 
   if (opts.h || opts.help) {
     console.log(help());
-    return process.exit(0);
+    process.exit(0);
   }
 
   if (opts.v || opts.version) {
     console.log(pkg.version);
-    return process.exit(0);
+    process.exit(0);
   }
 
   const credentialsFile = path.resolve(opts.c || opts.credentials || 'credentials.json');
