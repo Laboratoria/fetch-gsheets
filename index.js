@@ -1,16 +1,10 @@
-#! /usr/bin/env node
-
 const fs = require('fs');
 const path = require('path');
 const readline = require('readline');
 const { promisify } = require('util');
-const minimist = require('minimist');
 const { google } = require('googleapis');
-const pkg = require('./package.json');
 
 
-const readFile = promisify(fs.readFile);
-const writeFile = promisify(fs.writeFile);
 const scope = ['https://www.googleapis.com/auth/spreadsheets.readonly'];
 
 
@@ -23,19 +17,21 @@ const scope = ['https://www.googleapis.com/auth/spreadsheets.readonly'];
  */
 const getNewToken = (oAuth2Client, tokenFile) => new Promise((resolve, reject) => {
   const authUrl = oAuth2Client.generateAuthUrl({ access_type: 'offline', scope });
-  console.log('Authorize this app by visiting this url:', authUrl);
   const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
   });
-  rl.question('Enter the code from that page here: ', (code) => {
+  rl.question([
+    `Authorize this app by visiting this url: ${authUrl}`,
+    'Enter the code from that page here: ',
+  ].join('\n'), (code) => {
     rl.close();
     oAuth2Client.getToken(code, (err, token) => {
       if (err) {
         return reject(new Error('Error while trying to retrieve access token'));
       }
       oAuth2Client.setCredentials(token);
-      return writeFile(tokenFile, JSON.stringify(token))
+      return promisify(fs.writeFile)(tokenFile, JSON.stringify(token))
         .then(() => {
           console.log(`Token stored to ${tokenFile}`);
           resolve(oAuth2Client);
@@ -55,12 +51,30 @@ const getNewToken = (oAuth2Client, tokenFile) => new Promise((resolve, reject) =
  *                 * {String} tokenFile Path to token file.
  */
 const authorize = ({ credentials, tokenFile }) => {
+  if (!credentials || !credentials.installed) {
+    return Promise.reject(new TypeError(
+      'Credentials must be an object with a property named "installed"',
+    ));
+  }
+
   // eslint-disable-next-line camelcase
   const { client_secret, client_id, redirect_uris } = credentials.installed;
+  if (!client_secret || !client_id || !redirect_uris || !redirect_uris.length) {
+    return Promise.reject(new TypeError(
+      'Installed credentials should include client_secret, client_id and redirect_uris',
+    ));
+  }
+
   const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
 
+  if (!tokenFile) {
+    return Promise.reject(new TypeError(
+      'No path to token file provided in opts',
+    ));
+  }
+
   // Check if we have previously stored a token.
-  return readFile(tokenFile)
+  return promisify(fs.readFile)(tokenFile)
     .then((token) => {
       oAuth2Client.setCredentials(JSON.parse(token));
       return oAuth2Client;
@@ -99,70 +113,7 @@ const fetchSheets = (auth, sources) => {
 };
 
 
-module.exports = (sources, opts) => (
+module.exports = (sources = [], opts = {}) => (
   authorize(opts)
     .then(oAuth2Client => fetchSheets(oAuth2Client, sources))
 );
-
-
-const help = () => `Usage: ${pkg.name} [options] <selector-1> [...<selector-N>]
-
-Command expects one or more "selectors" as arguments.
-
-Each selector is a string with the following format:
-
-'<spreadSheetId>!<sheetId>!<range>'
-
-For example:
-
-${pkg.name} '2vG81bkFMfroZFNmCbD9SQcUo-Wed08goNrJB9Yyl9AB!SCL!A1:I'
-
-In this example
-
-* spreadSheetId: '2vG81bkFMfroZFNmCbD9SQcUo-Wed08goNrJB9Yyl9AB'
-* sheetId: 'SCL'
-* rangeL 'A1:I'
-
-Options:
-
--c, --credentials Path to service account key file. Default: credentials.json
--h, --help        Show this help.
--v, --version     Show ${pkg.name} version.
-
-For more info please check https://github.com/Laboratoria/fetch-gsheets
-`;
-
-
-if (module === require.main) {
-  const { _: sources, ...opts } = minimist(process.argv.slice(2));
-
-  if (opts.h || opts.help) {
-    console.log(help());
-    process.exit(0);
-  }
-
-  if (opts.v || opts.version) {
-    console.log(pkg.version);
-    process.exit(0);
-  }
-
-  const credentialsFile = path.resolve(opts.c || opts.credentials || 'credentials.json');
-  const credentialsDir = path.dirname(credentialsFile);
-  const tokenFile = path.join(credentialsDir, 'token.json');
-  const parsedSources = sources.map((source) => {
-    const sepIdx = source.indexOf('!');
-    return {
-      spreadsheetId: source.slice(0, sepIdx),
-      range: source.slice(sepIdx + 1),
-    };
-  });
-
-  readFile(credentialsFile)
-    .then(content => module.exports(parsedSources, {
-      ...opts,
-      credentials: JSON.parse(content),
-      tokenFile,
-    }))
-    .then(results => console.log(JSON.stringify(results, null, 2)))
-    .catch(err => console.error(err) || process.exit(1));
-}
