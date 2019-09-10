@@ -1,5 +1,4 @@
 const fs = require('fs');
-const path = require('path');
 const readline = require('readline');
 const { promisify } = require('util');
 const { google } = require('googleapis');
@@ -58,14 +57,14 @@ const authorize = ({ credentials, tokenFile }) => {
   }
 
   // eslint-disable-next-line camelcase
-  const { client_secret, client_id, redirect_uris } = credentials.installed;
-  if (!client_secret || !client_id || !redirect_uris || !redirect_uris.length) {
+  const { client_id: id, client_secret: secret, redirect_uris: uris } = credentials.installed;
+  if (!id || !secret || !uris || !uris.length) {
     return Promise.reject(new TypeError(
-      'Installed credentials should include client_secret, client_id and redirect_uris',
+      'Installed credentials should include client_id, client_secret and redirect_uris',
     ));
   }
 
-  const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
+  const oAuth2Client = new google.auth.OAuth2(id, secret, uris[0]);
 
   if (!tokenFile) {
     return Promise.reject(new TypeError(

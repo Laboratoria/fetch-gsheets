@@ -34,7 +34,7 @@ describe('fetchGSheets', () => {
       })
   ));
 
-  it('should reject when credentials is missing client_secret, client_id or redirect_uris', () => (
+  it('should reject when credentials is missing client_id, client_secret or redirect_uris', () => (
     fetchGSheets([], {
       credentials: {
         installed: {},
@@ -45,12 +45,12 @@ describe('fetchGSheets', () => {
       })
       .catch((err) => {
         expect(err instanceof TypeError).toBe(true);
-        expect(err.message).toBe('Installed credentials should include client_secret, client_id and redirect_uris');
+        expect(err.message).toBe('Installed credentials should include client_id, client_secret and redirect_uris');
       })
   ));
 
-  it('should reject when no tokenFile in opts', () => {
-    return fetchGSheets([], {
+  it('should reject when no tokenFile in opts', () => (
+    fetchGSheets([], {
       credentials: {
         installed: {
           client_secret: 'secret',
@@ -65,8 +65,8 @@ describe('fetchGSheets', () => {
       .catch((err) => {
         expect(err instanceof TypeError).toBe(true);
         expect(err.message).toBe('No path to token file provided in opts');
-      });
-  });
+      })
+  ));
 
   it('should reject when bad token passed to oAuth2Client.getToken', () => {
     fsMock.readFile.mockImplementationOnce(
@@ -100,10 +100,10 @@ describe('fetchGSheets', () => {
         expect(googleapisMock.__oAuth2Client.generateAuthUrl.mock.calls.length).toBe(1);
         expect(googleapisMock.__oAuth2Client.generateAuthUrl.mock.calls[0].length).toBe(1);
         expect(googleapisMock.__oAuth2Client.generateAuthUrl.mock.calls[0][0])
-        .toEqual({
-          access_type: 'offline',
-          scope: [ 'https://www.googleapis.com/auth/spreadsheets.readonly' ],
-        });
+          .toEqual({
+            access_type: 'offline',
+            scope: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
+          });
 
         expect(readlineMock.createInterface.mock.calls.length).toBe(1);
         expect(readlineMock.createInterface.mock.calls[0].length).toBe(1);
@@ -151,10 +151,10 @@ describe('fetchGSheets', () => {
         expect(googleapisMock.__oAuth2Client.generateAuthUrl.mock.calls.length).toBe(1);
         expect(googleapisMock.__oAuth2Client.generateAuthUrl.mock.calls[0].length).toBe(1);
         expect(googleapisMock.__oAuth2Client.generateAuthUrl.mock.calls[0][0])
-        .toEqual({
-          access_type: 'offline',
-          scope: [ 'https://www.googleapis.com/auth/spreadsheets.readonly' ],
-        });
+          .toEqual({
+            access_type: 'offline',
+            scope: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
+          });
 
         expect(readlineMock.createInterface.mock.calls.length).toBe(1);
         expect(readlineMock.createInterface.mock.calls[0].length).toBe(1);
@@ -199,10 +199,10 @@ describe('fetchGSheets', () => {
         expect(googleapisMock.__oAuth2Client.generateAuthUrl.mock.calls.length).toBe(1);
         expect(googleapisMock.__oAuth2Client.generateAuthUrl.mock.calls[0].length).toBe(1);
         expect(googleapisMock.__oAuth2Client.generateAuthUrl.mock.calls[0][0])
-        .toEqual({
-          access_type: 'offline',
-          scope: [ 'https://www.googleapis.com/auth/spreadsheets.readonly' ],
-        });
+          .toEqual({
+            access_type: 'offline',
+            scope: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
+          });
 
         expect(readlineMock.createInterface.mock.calls.length).toBe(1);
         expect(readlineMock.createInterface.mock.calls[0].length).toBe(1);
@@ -273,10 +273,10 @@ describe('fetchGSheets', () => {
         expect(googleapisMock.__oAuth2Client.generateAuthUrl.mock.calls.length).toBe(1);
         expect(googleapisMock.__oAuth2Client.generateAuthUrl.mock.calls[0].length).toBe(1);
         expect(googleapisMock.__oAuth2Client.generateAuthUrl.mock.calls[0][0])
-        .toEqual({
-          access_type: 'offline',
-          scope: [ 'https://www.googleapis.com/auth/spreadsheets.readonly' ],
-        });
+          .toEqual({
+            access_type: 'offline',
+            scope: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
+          });
 
         expect(readlineMock.createInterface.mock.calls.length).toBe(1);
         expect(readlineMock.createInterface.mock.calls[0].length).toBe(1);

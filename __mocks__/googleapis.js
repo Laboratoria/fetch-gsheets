@@ -14,7 +14,7 @@ exports.__spreadsheets = {
 
 exports.google = {
   auth: {
-    OAuth2: function OAuth2(client_id, client_secret, redirect_uris) {
+    OAuth2: function OAuth2() {
       this.generateAuthUrl = exports.__oAuth2Client.generateAuthUrl;
       this.getToken = exports.__oAuth2Client.getToken;
       this.setCredentials = exports.__oAuth2Client.setCredentials;
