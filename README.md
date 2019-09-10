@@ -3,6 +3,8 @@
 `fetch-gsheets` is a command line tool used to retrieve data from Google
 Spreadsheets.
 
+[![Build Status](https://travis-ci.com/Laboratoria/fetch-gsheets.svg?branch=master)](https://travis-ci.com/Laboratoria/fetch-gsheets)
+
 ## Installation
 
 Global install:
