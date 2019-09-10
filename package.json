@@ -8,13 +8,15 @@
   },
   "scripts": {
     "pretest": "eslint .",
-    "test": "jest --verbose --coverage"
+    "test": "jest --verbose --coverage",
+    "coveralls": "cat ./coverage/lcov.info | coveralls"
   },
   "dependencies": {
     "googleapis": "^43.0.0",
     "minimist": "^1.2.0"
   },
   "devDependencies": {
+    "coveralls": "^3.0.6",
     "eslint": "^6.3.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.18.2",

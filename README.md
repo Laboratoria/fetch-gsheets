@@ -4,6 +4,7 @@
 Spreadsheets.
 
 [![Build Status](https://travis-ci.com/Laboratoria/fetch-gsheets.svg?branch=master)](https://travis-ci.com/Laboratoria/fetch-gsheets)
+[![Coverage Status](https://coveralls.io/repos/github/Laboratoria/fetch-gsheets/badge.svg?branch=master)](https://coveralls.io/github/Laboratoria/fetch-gsheets?branch=master)
 
 ## Installation
 
