@@ -1,0 +1,5 @@
+__mocks__/
+.editorconfig
+.eslintrc
+index.spec.js
+.travis.yml
