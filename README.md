@@ -1,4 +1,4 @@
-# fetch-gsheets
+# @laboratoria/fetch-gsheets
 
 `fetch-gsheets` is a command line tool used to retrieve data from Google
 Spreadsheets.
@@ -11,19 +11,19 @@ Spreadsheets.
 Global install:
 
 ```sh
-npm install --global Laboratoria/fetch-gsheets
+npm install --global @laboratoria/fetch-gsheets
 
 # the same thing but using shortcuts ;-)
-npm i -g Laboratoria/fetch-gsheets
+npm i -g @laboratoria/fetch-gsheets
 ```
 
 As project _devDependency_:
 
 ```sh
-npm install --save-dev Laboratoria/fetch-gsheets
+npm install --save-dev @laboratoria/fetch-gsheets
 
 # the same thing but using shortcuts ;-)
-npm i -D Laboratoria/fetch-gsheets
+npm i -D @laboratoria/fetch-gsheets
 ```
 
 ***
