@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const { promisify } = require('util');
 const minimist = require('minimist');
-const fetchGSheets = require('../');
+const fetchGSheets = require('..');
 const pkg = require('../package.json');
 
 

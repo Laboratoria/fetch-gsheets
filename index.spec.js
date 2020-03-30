@@ -2,7 +2,7 @@ const fsMock = require('fs');
 const readlineMock = require('readline');
 const googleapisMock = require('googleapis');
 const { Readable, Writable } = require('stream');
-const fetchGSheets = require('./');
+const fetchGSheets = require('.');
 
 jest.mock('fs');
 jest.mock('readline');

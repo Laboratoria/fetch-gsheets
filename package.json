@@ -12,15 +12,15 @@
     "coveralls": "cat ./coverage/lcov.info | coveralls"
   },
   "dependencies": {
-    "googleapis": "^43.0.0",
-    "minimist": "^1.2.0"
+    "googleapis": "^48.0.0",
+    "minimist": "^1.2.5"
   },
   "devDependencies": {
-    "coveralls": "^3.0.9",
+    "coveralls": "^3.0.11",
     "eslint": "^6.8.0",
-    "eslint-config-airbnb-base": "^14.0.0",
-    "eslint-plugin-import": "^2.19.1",
-    "jest": "^24.9.0"
+    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-plugin-import": "^2.20.2",
+    "jest": "^25.2.4"
   },
   "engines": {
     "node": ">=8.15.0"
