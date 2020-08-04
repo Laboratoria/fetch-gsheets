@@ -1,6 +1,6 @@
 {
   "name": "@laboratoria/fetch-gsheets",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Fetch Google Sheets from the command line",
   "license": "MIT",
   "bin": {
