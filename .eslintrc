@@ -9,6 +9,7 @@
   },
   "rules": {
     "no-underscore-dangle": "off",
-    "arrow-parens": ["error", "as-needed", { "requireForBlockBody": true }]
+    "arrow-parens": ["error", "as-needed", { "requireForBlockBody": true }],
+    "no-multiple-empty-lines": ["error", { "max": 2, "maxEOF": 0, "maxBOF": 0 }]
   }
 }
