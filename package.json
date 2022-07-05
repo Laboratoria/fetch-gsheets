@@ -12,17 +12,17 @@
     "coveralls": "cat ./coverage/lcov.info | coveralls"
   },
   "dependencies": {
-    "googleapis": "^60.0.1",
-    "minimist": "^1.2.5"
+    "googleapis": "^105.0.0",
+    "minimist": "^1.2.6"
   },
   "devDependencies": {
-    "coveralls": "^3.1.0",
-    "eslint": "^7.9.0",
-    "eslint-config-airbnb-base": "^14.2.0",
-    "eslint-plugin-import": "^2.22.0",
-    "jest": "^26.4.2"
+    "coveralls": "^3.1.1",
+    "eslint": "^8.19.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "jest": "^28.1.2"
   },
   "engines": {
-    "node": ">=10"
+    "node": ">=12"
   }
 }
